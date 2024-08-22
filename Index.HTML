@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #game {
+      position: relative;
+      padding: 0;
+      border: solid black;
+      width: 100%;
+      height: 400px; 
+      overflow: hidden;
+    }
+    #play {
+      position: absolute;
+      background-color: #FF0000;
+      width: 20px;
+      height: 20px;
+    }
+    #chao {
+      position: absolute;
+      background-color: #00E342;
+      width: 100%; 
+      height: 20px; 
+      bottom: 0; 
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body id="j">
+  <div id="game">
+    <div id="play"></div>
+    <div id="chao"></div>
+  </div>
+  <div class="controls">
+    <button id="moveLeft"><</button>
+    <button id="moveRight">></button>
+    <button id="jump">^</button>
+  </div>
+  <script>
+    const play = document.getElementById('play');
+    const chao = document.getElementById('chao');
+    const game = document.getElementById('game');
+
+    let playTop = 0; 
+    let playLeft = 5
+    let isJumping = false;
+    let jumpVelocity = 0;
+    const gravity = 0.5;
+    const jumpStrength = -10; 
+
+    function applyGravity() {
+      const chaoTop = game.offsetHeight - chao.offsetHeight;
+      
+      function fall() {
+        if (playTop < chaoTop - play.offsetHeight || isJumping) {
+          playTop += jumpVelocity;
+          jumpVelocity += gravity;
+          if (playTop > chaoTop - play.offsetHeight) {
+            playTop = chaoTop - play.offsetHeight;
+            jumpVelocity = 0;
+            isJumping = false;
+          }
+          play.style.top = playTop + 'px';
+          requestAnimationFrame(fall);
+        }
+      }
+
+      requestAnimationFrame(fall);
+    }
+
+    function moveRight() {
+      playLeft += 10;  
+      play.style.left = playLeft + 'px';
+    }
+
+    function moveLeft() {
+      playLeft -= 10; 
+      play.style.left = playLeft + 'px';
+    }
+
+    function jump() {
+      if (!isJumping) {
+        isJumping = true;
+        jumpVelocity = jumpStrength;
+        applyGravity(); 
+      }
+    }
+
+    document.getElementById('moveRight').addEventListener('click', moveRight);
+    document.getElementById('moveLeft').addEventListener('click', moveLeft);
+    document.getElementById('jump').addEventListener('click', jump);
+
+    applyGravity(); 
+  </script>
+</body>
+</html>
